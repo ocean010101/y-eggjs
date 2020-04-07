@@ -59,12 +59,30 @@ function initController() {
     return controllers;
 }
 
-function initService() {
+function initService(app) {
     const services = {};
     load("service", (filename, service) => { //("user", { getUserName() { return delay('yegg', 1000); }, getUserInfo() { return 20; } });
-        services[filename] = service; //services['user'] = { getUserName() { return delay('yegg', 1000); }, getUserInfo() { return 20; } } }
+        services[filename] = service(app); //services['user'] = { getUserName() { return delay('yegg', 1000); }, getUserInfo() { return 20; } } }
     })
     return services;
 }
 
-module.exports = { initRouter, initController, initService };
+const Sequelize = require("sequelize");
+function loadConfig(app) {
+    load("config", (filename, conf) => {//("index", )
+        console.log("loadConfig", filename, conf);
+        if (conf.db) {
+            app.$db = new Sequelize(conf.db);
+            //加载模型
+            app.$model = {};
+            load("model", (filename, { schema, options }) => {
+                app.$model[filename] = app.$db.define(filename, schema, options);
+            })
+            //数据库同步
+            app.$db.sync();
+        }
+
+    })
+}
+
+module.exports = { initRouter, initController, initService, loadConfig };
