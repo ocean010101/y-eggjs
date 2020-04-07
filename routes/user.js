@@ -1,8 +1,9 @@
 module.exports = {
-    "get /": async ctx => {
-        ctx.body = "用户首页";
+    "get /": async app => {
+        const name = await app.$services.user.getUserName();
+        app.ctx.body = "用户名字：" + name;
     },
-    "get /info": ctx => {
-        ctx.body = "用户信息";
+    "get /info": app => {
+        app.ctx.body = "用户年龄：" + app.$services.user.getUserInfo();
     }
-}
+};

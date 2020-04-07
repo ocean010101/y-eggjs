@@ -1,8 +1,9 @@
 const Koa = require('koa');
-const { initRouter, initController } = require('./loader');
+const { initRouter, initController, initService } = require('./loader');
 class Yegg {
     constructor(options) {
-        this.$app = new Koa(options);
+        this.$app = new Koa(options);        
+        this.$services = initService();
         this.$controllers = initController();
         this.$router = initRouter(this);
         this.$app.use(this.$router.routes());

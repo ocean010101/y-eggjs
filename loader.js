@@ -41,7 +41,11 @@ function initRouter(app) { //因为有的route文件需要调用应用实例中�
         //解析文件内容，注册路由 eg: router.get('/', async ctx => {ctx.body = "项目首页";});
         Object.keys(routes).forEach(key => { //key=> "get /"
             const [method, routerPath] = key.split(' ');//["get", "/"]
-            router[method](prefix + routerPath, routes[key]);
+            // router[method](prefix + routerPath, routes[key]);
+            router[method](prefix + routerPath, async ctx => {// 传入ctx
+                app.ctx = ctx;// 把ctx挂载到app
+                await routes[key](app);
+            });
         })
     })
     return router;
@@ -54,4 +58,13 @@ function initController() {
     })
     return controllers;
 }
-module.exports = { initRouter, initController };
+
+function initService() {
+    const services = {};
+    load("service", (filename, service) => { //("user", { getUserName() { return delay('yegg', 1000); }, getUserInfo() { return 20; } });
+        services[filename] = service; //services['user'] = { getUserName() { return delay('yegg', 1000); }, getUserInfo() { return 20; } } }
+    })
+    return services;
+}
+
+module.exports = { initRouter, initController, initService };
