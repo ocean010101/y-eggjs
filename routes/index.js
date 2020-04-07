@@ -1,8 +1,4 @@
-module.exports = {
-    "get /": async ctx => {
-        ctx.body = "项目首页";
-    },
-    "get /detail": ctx => {
-        ctx.body = "项目详情页";
-    }
-}
+module.exports = app => ({
+    "get /": app.$controllers.home.index,
+    "get /detail": app.$controllers.home.detail
+});
