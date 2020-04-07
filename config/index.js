@@ -7,4 +7,5 @@ module.exports = {
         password: "123456",
         database: "egg_db"
     },
+    middleware: ['logger'],//以数组形式，保证执行顺序
 };

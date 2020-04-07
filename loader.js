@@ -81,7 +81,12 @@ function loadConfig(app) {
             //数据库同步
             app.$db.sync();
         }
-
+        if (conf.middleware) {
+            conf.middleware.forEach(midName => {
+                const midPath = path.resolve(__dirname, "middleware", midName);
+                app.$app.use(require(midPath));
+            });
+        }
     })
 }
 
